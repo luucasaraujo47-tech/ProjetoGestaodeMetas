@@ -1,24 +1,38 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Personal Goal Manager</title>
+    <title>Gerenciador de Metas Pessoais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
             colors: {
-              primary: '#1d4ed8',
-              secondary: '#10b981',
-              accent: '#f59e0b',
-              neutral: '#f3f4f6',
-              'base-100': '#ffffff',
-              'base-content': '#1f2937',
-            }
+              primary: '#3b82f6', // blue-500
+              secondary: '#10b981', // emerald-500
+              accent: '#f59e0b', // amber-500
+              neutral: '#1f2937', // gray-800 (main bg)
+              'base-100': '#374151', // gray-700 (card bg)
+              'base-content': '#d1d5db', // gray-300 (main text)
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-in-out',
+            },
           }
         }
       }
@@ -35,7 +49,7 @@
 }
 </script>
 </head>
-  <body class="bg-neutral">
+  <body class="bg-neutral font-sans text-base-content">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

@@ -1,6 +1,5 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import { GoalCategory, AISuggestion } from '../types';
+import { GoalCategory, HabitFrequency, AISuggestion } from '../types';
 
 if (!process.env.API_KEY) {
   // In a real app, you'd want to handle this more gracefully.
@@ -12,7 +11,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
 
 export const getAIGoalSuggestions = async (category: GoalCategory): Promise<AISuggestion[]> => {
   try {
-    const prompt = `Suggest 3 SMART (Specific, Measurable, Achievable, Relevant, Time-bound) goals for the '${category}' category. The goals should be actionable and inspiring for someone looking to improve their life in this area. Provide a brief description for each goal.`;
+    const prompt = `Sugira 3 metas SMART (Específicas, Mensuráveis, Atingíveis, Relevantes, Temporais) para a categoria '${category}'. As metas devem ser práticas e inspiradoras para alguém que busca melhorar sua vida nesta área. Forneça uma breve descrição para cada meta.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -26,11 +25,11 @@ export const getAIGoalSuggestions = async (category: GoalCategory): Promise<AISu
             properties: {
               title: {
                 type: Type.STRING,
-                description: 'The specific title of the goal.',
+                description: 'O título específico da meta.',
               },
               description: {
                 type: Type.STRING,
-                description: 'A brief, motivating description of the goal.',
+                description: 'Uma breve e motivadora descrição da meta.',
               },
             },
             required: ["title", "description"],
@@ -46,7 +45,47 @@ export const getAIGoalSuggestions = async (category: GoalCategory): Promise<AISu
     console.error("Error fetching AI goal suggestions:", error);
     // Return some fallback suggestions on error
     return [
-      { title: "Error fetching suggestions", description: "Could not connect to the AI service. Please try again later." },
+      { title: "Erro ao buscar sugestões", description: "Não foi possível conectar ao serviço de IA. Por favor, tente novamente mais tarde." },
+    ];
+  }
+};
+
+export const getAIHabitSuggestions = async (frequency: HabitFrequency): Promise<AISuggestion[]> => {
+  try {
+    const prompt = `Sugira 3 hábitos positivos para uma frequência '${frequency}'. Os hábitos devem ser simples, práticos e contribuir para o bem-estar pessoal ou produtividade. Para cada hábito, forneça um título conciso (o próprio hábito) e uma descrição curta e motivadora de seus benefícios.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              title: {
+                type: Type.STRING,
+                description: 'O nome do hábito.',
+              },
+              description: {
+                type: Type.STRING,
+                description: 'Uma breve descrição dos benefícios do hábito.',
+              },
+            },
+            required: ["title", "description"],
+          },
+        },
+      },
+    });
+
+    const jsonText = response.text.trim();
+    const suggestions = JSON.parse(jsonText);
+    return suggestions as AISuggestion[];
+  } catch (error) {
+    console.error("Error fetching AI habit suggestions:", error);
+    return [
+      { title: "Erro ao buscar sugestões", description: "Não foi possível conectar ao serviço de IA. Por favor, tente novamente mais tarde." },
     ];
   }
 };

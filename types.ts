@@ -20,7 +20,12 @@ export interface Goal {
     category: GoalCategory;
     dueDate: string; // ISO string date
     isCompleted: boolean;
+    progress: number; // Percentage from 0 to 100
     createdAt: string; // ISO string datetime
+    // New fields for incremental progress
+    totalSteps?: number;
+    currentStep?: number;
+    stepUnit?: string;
 }
 
 export interface Habit {
@@ -33,7 +38,7 @@ export interface Habit {
     completedDates: string[]; // Store dates when habit was completed
 }
 
-export type GoalCreate = Omit<Goal, 'id' | 'createdAt' | 'isCompleted'>;
+export type GoalCreate = Omit<Goal, 'id' | 'createdAt' | 'isCompleted' | 'progress'>;
 export type GoalUpdate = Partial<Omit<Goal, 'id' | 'createdAt'>>;
 
 export type HabitCreate = Omit<Habit, 'id' | 'createdAt' | 'completedDates'>;
